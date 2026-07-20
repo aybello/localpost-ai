@@ -37,7 +37,7 @@
 - [x] Run database, unit, TypeScript, and production build validations and fix all failures.
 - [x] Verify the rendered interface visually on desktop, tablet, and mobile and refine layout or contrast issues.
 - [x] Review the complete TODO list, mark all delivered items accurately, and create the first delivery checkpoint.
-- [ ] Deliver the working project with concise usage notes and clearly stated integration limitations.
+- [x] Deliver the working project with concise usage notes and clearly stated integration limitations.
 - [x] Verify explicit loading, empty, success, and recoverable error states in onboarding, brand profile, and dashboard overview.
 - [x] Verify onboarding, brand review, calendar generation, batch-image retry, and atomic post lifecycle actions through protected workflow tests and rendered route validation.
 - [x] Audit and verify post-editor loading, not-found, mutation-success, and recoverable mutation-error states.
@@ -46,3 +46,8 @@
 - [x] Add explicit calendar loading, empty, ready, and retryable error-state logic with active-suite tests.
 - [x] Exercise a pending/failed calendar visual batch through the real protected image procedure, including one failed attempt and retry.
 - [x] Render-test post-editor loading, actual not-found, success-ready, and recoverable mutation-error states, then capture the true not-found route.
+- [x] Reproduce the published white-screen failure on the live LocalPost AI domain and capture the runtime error.
+- [x] Identify and fix the production-only rendering or asset-loading root cause without regressing authenticated routes.
+- [x] Validate the corrected overview, onboarding, calendar, brand profile, and post routes in local and production-like builds.
+- [x] Run the complete automated tests, TypeScript validation, and production build after the fix.
+- [x] Save and deliver a corrected checkpoint for the white-screen issue.

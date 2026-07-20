@@ -167,18 +167,10 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (!id.includes("node_modules")) return undefined;
-          if (/node_modules\/(react|react-dom|scheduler|wouter)\//.test(id)) return "react-vendor";
-          if (/node_modules\/(@trpc|@tanstack|superjson)\//.test(id)) return "data-vendor";
-          if (/node_modules\/(@radix-ui|lucide-react|class-variance-authority|clsx|tailwind-merge)\//.test(id)) return "ui-vendor";
-          if (id.includes("node_modules/date-fns/")) return "date-vendor";
-          return "vendor";
-        },
-      },
-    },
+    // Route-level lazy loading already keeps feature pages separate. Let Rollup
+    // determine shared chunks so React and its consumers cannot form a circular
+    // manual vendor graph that fails before the application mounts.
+    chunkSizeWarningLimit: 1000,
   },
   server: {
     host: true,
