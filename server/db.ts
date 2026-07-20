@@ -257,7 +257,27 @@ export async function getBusinessForUser(userId: number, businessId: string) {
     )
     .where(and(eq(businesses.id, businessId), eq(businesses.userId, userId)))
     .limit(1);
-  return rows[0];
+  const record = rows[0];
+  if (!record) return undefined;
+
+  const analyses = await db
+    .select({
+      sourceUrl: websiteAnalyses.sourceUrl,
+      sourceMetadata: websiteAnalyses.sourceMetadata,
+      createdAt: websiteAnalyses.createdAt,
+    })
+    .from(websiteAnalyses)
+    .where(
+      and(
+        eq(websiteAnalyses.businessId, businessId),
+        eq(websiteAnalyses.userId, userId),
+        eq(websiteAnalyses.status, "completed")
+      )
+    )
+    .orderBy(desc(websiteAnalyses.createdAt))
+    .limit(1);
+
+  return { ...record, latestAnalysis: analyses[0] ?? null };
 }
 
 export async function listBusinessesForUser(userId: number) {

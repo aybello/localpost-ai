@@ -228,6 +228,48 @@ function mergeDistinct(primary: string[], fallback: string[], limit: number): st
   return normalizeList([...primary, ...fallback], limit);
 }
 
+function colorEvidenceForPrompt(input: AnalyzeBrandInput): string {
+  const evidence = input.scrape.metadata?.colorEvidence ?? [];
+  if (!evidence.length) {
+    return input.scrape.detectedColors.length
+      ? input.scrape.detectedColors
+          .map(color => `${color} | confidence: unranked | source: page`)
+          .join("\n")
+      : "None detected";
+  }
+
+  return evidence
+    .slice(0, MAX_BRAND_COLORS)
+    .map(
+      item =>
+        `${item.color} | confidence: ${item.confidence} | source: ${item.source} | score: ${item.score}`
+    )
+    .join("\n");
+}
+
+function prioritizedWebsiteColors(input: AnalyzeBrandInput, modelColors: string[]): string[] {
+  const evidence = input.scrape.metadata?.colorEvidence ?? [];
+  if (!evidence.length) {
+    return normalizeColors([...modelColors, ...input.scrape.detectedColors]);
+  }
+
+  const trusted = normalizeColors(
+    evidence
+      .filter(item => item.confidence === "high" || item.confidence === "medium")
+      .map(item => item.color)
+  );
+  const incidentalColors = new Set(
+    normalizeColors(
+      evidence.filter(item => item.confidence === "low").map(item => item.color)
+    )
+  );
+  const independentModelSuggestions = normalizeColors(modelColors).filter(
+    color => !incidentalColors.has(color)
+  );
+
+  return normalizeColors([...trusted, ...independentModelSuggestions]);
+}
+
 function validationReason(error: unknown): string {
   if (error instanceof z.ZodError) {
     const paths = Array.from(
@@ -259,7 +301,9 @@ Industry: ${input.industry}
 Preferred tone: ${input.tonePreference || "No explicit preference"}
 Key differentiators: ${input.keyDifferentiators.join("; ") || "None supplied"}
 Location: ${[input.city, input.state].filter(Boolean).join(", ") || "Not supplied"}
-Detected website colors: ${input.scrape.detectedColors.join(", ") || "None detected"}
+
+RANKED WEBSITE COLOR EVIDENCE
+${colorEvidenceForPrompt(input)}
 
 WEBSITE EVIDENCE
 Source: ${input.scrape.sourceUrl}
@@ -269,7 +313,7 @@ Description: ${input.scrape.description}
 ${input.scrape.text}
 --- END UNTRUSTED WEBSITE TEXT ---
 
-Create concise, evidence-led fields. Prefer the user's explicit tone and differentiators when they do not conflict with the website. Return no more than ${MAX_SHORT_LIST_ITEMS} values in any descriptive list and no more than ${MAX_BRAND_COLORS} brand colors. Brand colors must be six-digit hex values. Image guidance must call for believable, photorealistic business imagery and must not assume logos or uniforms that the evidence does not establish. Confidence should reflect how much useful evidence was available.`;
+Create concise, evidence-led fields. Prefer the user's explicit tone and differentiators when they do not conflict with the website. Return no more than ${MAX_SHORT_LIST_ITEMS} values in any descriptive list and no more than ${MAX_BRAND_COLORS} brand colors. Brand colors must be six-digit hex values. Treat high- and medium-confidence website color evidence as measured facts: preserve those colors in their ranked order and do not replace them with an invented palette. Lower-confidence colors are incidental supporting evidence only; do not promote a low-confidence, single-use utility or social-platform color into the brand palette. Image guidance must call for believable, photorealistic business imagery and must not assume logos or uniforms that the evidence does not establish. Confidence should reflect how much useful evidence was available.`;
 }
 
 async function requestAnalysis(prompt: string, isRepair: boolean) {
@@ -329,11 +373,7 @@ export async function analyzeBrandEvidence(
     ...parsed,
     businessName: input.businessName.trim() || parsed.businessName,
     industry: input.industry.trim() || parsed.industry,
-    brandColors: mergeDistinct(
-      parsed.brandColors,
-      normalizeColors(input.scrape.detectedColors),
-      MAX_BRAND_COLORS
-    ),
+    brandColors: prioritizedWebsiteColors(input, parsed.brandColors),
     keyDifferentiators: mergeDistinct(
       input.keyDifferentiators,
       parsed.keyDifferentiators,

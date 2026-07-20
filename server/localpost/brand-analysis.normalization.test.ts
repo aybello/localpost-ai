@@ -84,6 +84,63 @@ describe("structured brand-analysis normalization", () => {
     );
   });
 
+  it("prioritizes trusted website evidence over model-generated palette guesses", async () => {
+    const result = await analyzeBrandEvidence({
+      businessName: "AfroPuppy Yoga",
+      industry: "Yoga and wellness",
+      keyDifferentiators: [],
+      scrape: {
+        sourceUrl: "https://afropuppyyoga.ca/",
+        title: "AfroPuppy Yoga",
+        description: "Movement and wellness",
+        text: "Public website evidence about yoga, movement, and wellness services.",
+        detectedColors: ["#4A7C59", "#D4A853", "#F5F0E8", "#778899"],
+        metadata: {
+          colorEvidence: [
+            {
+              color: "#4A7C59",
+              source: "css-variable",
+              confidence: "high",
+              score: 98,
+              occurrences: 5,
+              contexts: [":root --brand-primary"],
+            },
+            {
+              color: "#D4A853",
+              source: "stylesheet",
+              confidence: "medium",
+              score: 71,
+              occurrences: 3,
+              contexts: [".button background-color"],
+            },
+            {
+              color: "#F5F0E8",
+              source: "stylesheet",
+              confidence: "low",
+              score: 42,
+              occurrences: 1,
+              contexts: [".surface background-color"],
+            },
+          ],
+        },
+      } as any,
+    });
+
+    expect(result.brandColors.slice(0, 4)).toEqual([
+      "#4A7C59",
+      "#D4A853",
+      "#185B64",
+      "#112233",
+    ]);
+    const request = invokeLLM.mock.calls[0]?.[0];
+    expect(request.messages[1].content).toContain(
+      "#4A7C59 | confidence: high | source: css-variable | score: 98"
+    );
+    expect(request.messages[1].content).toContain(
+      "preserve those colors in their ranked order"
+    );
+  });
+
   it("deduplicates preferred differentiators, preserves their priority, and enforces the 12-item bound", async () => {
     const result = await analyzeBrandEvidence({
       businessName: "North Star Dental",

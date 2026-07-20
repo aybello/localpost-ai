@@ -61,3 +61,11 @@
 - [x] Execute the real protected businesses.onboard procedure against a valid public website after the analyzer fix.
 - [x] Verify the successful onboarding writes a ready business, completed website analysis, and editable brand profile, then remove the temporary validation record.
 - [x] Confirm the fixed onboarding route returns success through the application API rather than only the direct analysis service.
+- [x] Compare the analyzed business’s saved palette with colors present in its live HTML, inline styles, stylesheets, CSS variables, metadata, logo, and prominent imagery.
+- [x] Rank extracted colors by brand relevance and frequency while excluding transparent, near-white, near-black, and generic browser or utility colors where appropriate.
+- [x] Preserve high-confidence CSS and visual evidence ahead of model-invented palette values during brand-analysis normalization.
+- [x] Persist color-source evidence and confidence so the brand profile can distinguish detected colors from AI suggestions.
+- [x] Add regression tests for CSS variables, external stylesheets, shorthand hex, RGB/HSL values, duplicate normalization, neutral filtering, and evidence ranking.
+- [x] Re-run the analyzed business through the corrected scraper and verify the resulting palette against the live website.
+- [x] Run the complete test, TypeScript, and production-build suite after the color-extraction fix.
+- [x] Save and publish a corrected checkpoint for evidence-grounded brand colors.

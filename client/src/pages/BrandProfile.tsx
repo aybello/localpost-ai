@@ -11,6 +11,13 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 
+type ColorEvidenceView = {
+  color: string;
+  source: string;
+  confidence: "high" | "medium" | "low";
+  score: number;
+};
+
 type BrandForm = {
   brandSummary: string;
   brandVoice: string;
@@ -57,6 +64,38 @@ function split(value: string) {
     .slice(0, 12);
 }
 
+function readColorEvidence(metadata: Record<string, unknown> | undefined): ColorEvidenceView[] {
+  const raw = metadata?.colorEvidence;
+  if (!Array.isArray(raw)) return [];
+
+  return raw.flatMap(item => {
+    if (!item || typeof item !== "object") return [];
+    const value = item as Record<string, unknown>;
+    if (
+      typeof value.color !== "string" ||
+      !/^#[0-9A-Fa-f]{6}$/.test(value.color) ||
+      typeof value.source !== "string" ||
+      !["high", "medium", "low"].includes(String(value.confidence)) ||
+      typeof value.score !== "number"
+    ) {
+      return [];
+    }
+    return [{
+      color: value.color.toUpperCase(),
+      source: value.source,
+      confidence: value.confidence as ColorEvidenceView["confidence"],
+      score: value.score,
+    }];
+  });
+}
+
+function colorSourceLabel(source: string): string {
+  return source
+    .split("-")
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 function ListField({
   id,
   label,
@@ -84,6 +123,10 @@ export default function BrandProfile() {
   const utils = trpc.useUtils();
   const businesses = trpc.businesses.list.useQuery();
   const [selectedId, setSelectedId] = useState(() => localStorage.getItem("localpost-active-business") ?? "");
+  const selectedBusinessInput = useMemo(() => ({ businessId: selectedId }), [selectedId]);
+  const selectedBusiness = trpc.businesses.get.useQuery(selectedBusinessInput, {
+    enabled: Boolean(selectedId),
+  });
   const [form, setForm] = useState<BrandForm>(emptyForm);
 
   useEffect(() => {
@@ -117,6 +160,14 @@ export default function BrandProfile() {
   }, [profile]);
 
   const colors = useMemo(() => split(form.brandColors).filter(color => /^#[0-9A-Fa-f]{6}$/.test(color)), [form.brandColors]);
+  const colorEvidence = useMemo(
+    () => readColorEvidence(selectedBusiness.data?.latestAnalysis?.sourceMetadata),
+    [selectedBusiness.data?.latestAnalysis?.sourceMetadata]
+  );
+  const evidenceByColor = useMemo(
+    () => new Map(colorEvidence.map(item => [item.color, item])),
+    [colorEvidence]
+  );
 
   const save = trpc.brand.update.useMutation({
     onSuccess: async () => {
@@ -128,7 +179,10 @@ export default function BrandProfile() {
 
   const reanalyze = trpc.businesses.reanalyze.useMutation({
     onSuccess: async () => {
-      await utils.businesses.list.invalidate();
+      await Promise.all([
+        utils.businesses.list.invalidate(),
+        utils.businesses.get.invalidate({ businessId: selectedId }),
+      ]);
       toast.success("Brand analysis refreshed");
     },
     onError: error => toast.error("Re-analysis failed", { description: error.message }),
@@ -301,8 +355,41 @@ export default function BrandProfile() {
               <div className="grid gap-2">
                 <Label htmlFor="colors">Brand colors</Label>
                 <Input id="colors" value={form.brandColors} onChange={event => update("brandColors", event.target.value)} className="h-11 rounded-xl font-mono text-xs" />
-                <div className="flex flex-wrap gap-2 pt-1">
-                  {colors.map(color => <div key={color} className="h-10 w-10 rounded-xl border shadow-sm" style={{ backgroundColor: color }} title={color} />)}
+                <p className="text-xs leading-5 text-muted-foreground">
+                  Website colors include their extraction source and confidence. Unlabeled values may be AI suggestions or your own edits.
+                </p>
+                <div className="grid gap-2 pt-1 sm:grid-cols-2">
+                  {colors.map(rawColor => {
+                    const color = rawColor.toUpperCase();
+                    const evidence = evidenceByColor.get(color);
+                    return (
+                      <div key={color} className="flex items-center gap-3 rounded-xl border bg-background/70 p-2.5">
+                        <div
+                          className="h-10 w-10 shrink-0 rounded-lg border shadow-sm"
+                          style={{ backgroundColor: color }}
+                          title={color}
+                        />
+                        <div className="min-w-0">
+                          <p className="font-mono text-xs font-bold">{color}</p>
+                          {evidence ? (
+                            <div className="mt-0.5 text-[11px] leading-4">
+                              <p className="font-semibold capitalize text-primary">
+                                {evidence.confidence} confidence
+                              </p>
+                              <p
+                                className="truncate text-muted-foreground"
+                                title={`Website · ${colorSourceLabel(evidence.source)}`}
+                              >
+                                Website · {colorSourceLabel(evidence.source)}
+                              </p>
+                            </div>
+                          ) : (
+                            <p className="mt-0.5 text-[11px] text-muted-foreground">Suggested or edited</p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
               <div className="grid gap-2">
