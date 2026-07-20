@@ -10,7 +10,11 @@ import {
   setBusinessStatus,
 } from "../db";
 import { protectedProcedure, router } from "../_core/trpc";
-import { analyzeBrandEvidence, BRAND_ANALYSIS_MODEL } from "../localpost/brand-analysis";
+import {
+  analyzeBrandEvidence,
+  BRAND_ANALYSIS_MODEL,
+  BrandAnalysisValidationError,
+} from "../localpost/brand-analysis";
 import {
   normalizeWebsiteUrl,
   scrapeBusinessWebsite,
@@ -94,15 +98,15 @@ async function runAnalysis(args: {
     if (error instanceof WebsiteScrapeError) {
       throw new TRPCError({ code: "BAD_REQUEST", message: error.message });
     }
-    if (error instanceof z.ZodError) {
+    if (error instanceof BrandAnalysisValidationError || error instanceof z.ZodError) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "The AI analysis did not pass validation. Please try again.",
+        message: "The analysis response could not be structured reliably after an automatic retry.",
       });
     }
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: "The brand analysis could not be completed. Please try again.",
+      message: "The analysis service is temporarily unavailable. Please try again in a moment.",
     });
   }
 }

@@ -51,3 +51,13 @@
 - [x] Validate the corrected overview, onboarding, calendar, brand profile, and post routes in local and production-like builds.
 - [x] Run the complete automated tests, TypeScript validation, and production build after the fix.
 - [x] Save and deliver a corrected checkpoint for the white-screen issue.
+- [x] Reproduce the onboarding brand-analysis validation failure and capture the rejected structured-output fields.
+- [x] Make brand-analysis parsing tolerant of recoverable model-shape drift while preserving strict sanitized persistence boundaries.
+- [x] Add one bounded automatic repair or retry when the first structured brand-analysis response fails validation.
+- [x] Return concise actionable onboarding errors without exposing raw model or schema details.
+- [x] Add regression tests for malformed-but-recoverable analysis responses and unrecoverable retry failure.
+- [x] Validate a successful website-analysis onboarding workflow after the fix, then run the full test, type-check, and production-build suite.
+- [x] Save and publish a corrected checkpoint for the brand-analysis validation failure.
+- [x] Execute the real protected businesses.onboard procedure against a valid public website after the analyzer fix.
+- [x] Verify the successful onboarding writes a ready business, completed website analysis, and editable brand profile, then remove the temporary validation record.
+- [x] Confirm the fixed onboarding route returns success through the application API rather than only the direct analysis service.

@@ -60,6 +60,7 @@ vi.mock("./localpost/post-generation", async () => {
   return { ...actual, generateMonthlyContent: mocks.generateMonthlyContent };
 });
 
+import { BrandAnalysisValidationError } from "./localpost/brand-analysis";
 import { appRouter } from "./routers";
 
 const BUSINESS_ID = "22222222-2222-4222-8222-222222222222";
@@ -205,6 +206,43 @@ describe("guided onboarding workflow", () => {
         userId: 37,
         businessId: BUSINESS_ID,
         profile: expect.objectContaining({ brandSummary: analysis.brandSummary, isConfirmed: 0 }),
+      })
+    );
+  });
+
+  it("maps an exhausted structured-output repair to concise onboarding copy", async () => {
+    mocks.createBusinessForUser.mockResolvedValue(BUSINESS_ID);
+    mocks.scrapeBusinessWebsite.mockResolvedValue({
+      sourceUrl: "https://northstardental.example/",
+      title: "North Star Dental",
+      text: "Public business evidence.",
+      metadata: {},
+      detectedColors: [],
+    });
+    mocks.analyzeBrandEvidence.mockRejectedValue(new BrandAnalysisValidationError());
+    mocks.saveFailedWebsiteAnalysis.mockResolvedValue(undefined);
+
+    const caller = appRouter.createCaller(createContext());
+    await expect(
+      caller.businesses.onboard({
+        name: "North Star Dental",
+        websiteUrl: "northstardental.example",
+        industry: "Dentistry",
+        tonePreference: "Warm and reassuring",
+        keyDifferentiators: [],
+        city: "Austin",
+        state: "Texas",
+        country: "United States",
+      })
+    ).rejects.toMatchObject({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "The analysis response could not be structured reliably after an automatic retry.",
+    });
+    expect(mocks.saveFailedWebsiteAnalysis).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 37,
+        businessId: BUSINESS_ID,
+        errorMessage: "Brand analysis output failed validation after one repair attempt.",
       })
     );
   });
