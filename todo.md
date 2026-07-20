@@ -1,0 +1,48 @@
+# LocalPost AI — Project TODO
+
+- [x] Initialize a full-stack React, Express, tRPC, database, storage, and authenticated-user workspace.
+- [x] Capture the definitive product scope and the requirement to generate 12–16 posts per month.
+- [x] Review the platform guidance for authenticated full-stack apps, built-in LLMs, image generation, storage, scraping, and scheduled content states.
+- [x] Document the application vocabulary and user-scoped data relationships.
+- [x] Extend the database schema with businesses owned by an authenticated user.
+- [x] Extend the database schema with one editable brand profile per business.
+- [x] Extend the database schema with website analysis snapshots and raw extracted evidence.
+- [x] Extend the database schema with monthly generation runs and progress state.
+- [x] Extend the database schema with generated posts, captions, hashtags, calls-to-action, topics, image prompts, image URLs, scheduled dates, and lifecycle statuses.
+- [x] Generate a migration from the Drizzle schema and apply the reviewed SQL migration.
+- [x] Add database helpers that enforce authenticated-user ownership on every read and write.
+- [x] Add a server-side website scraper with URL validation, private-network blocking, timeouts, page-size limits, readable text extraction, metadata extraction, and brand-color evidence.
+- [x] Add structured AI brand analysis for voice, palette, themes, audience, keywords, services, and differentiators.
+- [x] Add an onboarding mutation that persists the business, analysis snapshot, and editable brand profile.
+- [x] Add business-list, business-detail, brand-profile update, re-analysis, and deletion procedures.
+- [x] Add a monthly plan generator that validates a target count from 12 through 16 and avoids repetitive topics.
+- [x] Ensure every generated post includes a caption, hashtags, call-to-action, tone metadata, topic, and scheduled date.
+- [x] Add photorealistic image-prompt construction informed by both the post topic and brand aesthetic.
+- [x] Add generated-image persistence in S3 with URL and storage-key metadata scoped to the owning user.
+- [x] Add image regeneration with optional editor guidance.
+- [x] Add caption regeneration and tone-adjustment controls without overwriting unrelated post fields.
+- [x] Add post edit, approve, reject, schedule, return-to-draft, and delete procedures with ownership checks.
+- [x] Add month-calendar queries and dashboard summary queries.
+- [x] Evaluate, adapt, and integrate the provided dashboard layout as the active application shell.
+- [x] Establish a distinctive visual system with accessible colors, typography, spacing, shadows, and motion tokens.
+- [x] Build and route an authenticated responsive sidebar and mobile navigation.
+- [x] Build and route the multi-step onboarding wizard through a reachable brand-review destination.
+- [x] Build the dashboard home with generation status, upcoming post previews, aggregate counts, and quick actions.
+- [x] Build the monthly content calendar with post thumbnails and draft, approved, and scheduled indicators.
+- [x] Build the post editor with inline caption editing, hashtags, call-to-action, tone adjustment, image regeneration, and lifecycle controls.
+- [x] Build the editable brand profile with AI-derived summary, tone, palette, messaging themes, audience, keywords, and differentiators.
+- [x] Build empty, loading, success, and recoverable error states for every core workflow.
+- [x] Add responsive behavior for desktop, tablet, and mobile breakpoints.
+- [x] Add Vitest coverage for scraper safety, structured analysis normalization, monthly post-count validation, generation output requirements, ownership isolation, and status transitions.
+- [x] Run database, unit, TypeScript, and production build validations and fix all failures.
+- [x] Verify the rendered interface visually on desktop, tablet, and mobile and refine layout or contrast issues.
+- [x] Review the complete TODO list, mark all delivered items accurately, and create the first delivery checkpoint.
+- [ ] Deliver the working project with concise usage notes and clearly stated integration limitations.
+- [x] Verify explicit loading, empty, success, and recoverable error states in onboarding, brand profile, and dashboard overview.
+- [x] Verify onboarding, brand review, calendar generation, batch-image retry, and atomic post lifecycle actions through protected workflow tests and rendered route validation.
+- [x] Audit and verify post-editor loading, not-found, mutation-success, and recoverable mutation-error states.
+- [x] Add explicit structured brand-analysis normalization tests for colors, bounded and deduplicated arrays, and sanitized fields.
+- [x] Add a protected successful monthly-plan workflow test and verify retry handling for pending or failed calendar visuals.
+- [x] Add explicit calendar loading, empty, ready, and retryable error-state logic with active-suite tests.
+- [x] Exercise a pending/failed calendar visual batch through the real protected image procedure, including one failed attempt and retry.
+- [x] Render-test post-editor loading, actual not-found, success-ready, and recoverable mutation-error states, then capture the true not-found route.

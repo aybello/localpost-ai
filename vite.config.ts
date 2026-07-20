@@ -167,6 +167,18 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return undefined;
+          if (/node_modules\/(react|react-dom|scheduler|wouter)\//.test(id)) return "react-vendor";
+          if (/node_modules\/(@trpc|@tanstack|superjson)\//.test(id)) return "data-vendor";
+          if (/node_modules\/(@radix-ui|lucide-react|class-variance-authority|clsx|tailwind-merge)\//.test(id)) return "ui-vendor";
+          if (id.includes("node_modules/date-fns/")) return "date-vendor";
+          return "vendor";
+        },
+      },
+    },
   },
   server: {
     host: true,

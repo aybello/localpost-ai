@@ -2,6 +2,11 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
+import { brandRouter } from "./routers/brand";
+import { businessesRouter } from "./routers/businesses";
+import { dashboardRouter } from "./routers/dashboard";
+import { generationRouter } from "./routers/generation";
+import { postsRouter } from "./routers/posts";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -17,12 +22,11 @@ export const appRouter = router({
     }),
   }),
 
-  // TODO: add feature routers here, e.g.
-  // todo: router({
-  //   list: protectedProcedure.query(({ ctx }) =>
-  //     db.getUserTodos(ctx.user.id)
-  //   ),
-  // }),
+  businesses: businessesRouter,
+  dashboard: dashboardRouter,
+  brand: brandRouter,
+  generation: generationRouter,
+  posts: postsRouter,
 });
 
 export type AppRouter = typeof appRouter;

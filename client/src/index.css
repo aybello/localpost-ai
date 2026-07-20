@@ -4,10 +4,13 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 5px);
+  --radius-md: calc(var(--radius) - 3px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 5px);
+  --radius-2xl: calc(var(--radius) + 10px);
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -43,83 +46,99 @@
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --radius: 0.65rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.235 0.015 65);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.235 0.015 65);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.235 0.015 65);
-  --secondary: oklch(0.98 0.001 286.375);
-  --secondary-foreground: oklch(0.4 0.015 65);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.141 0.005 285.823);
-  --destructive: oklch(0.577 0.245 27.325);
+  --radius: 0.9rem;
+  --background: oklch(0.975 0.012 112);
+  --foreground: oklch(0.25 0.027 167);
+  --card: oklch(0.998 0.003 110);
+  --card-foreground: oklch(0.25 0.027 167);
+  --popover: oklch(0.998 0.003 110);
+  --popover-foreground: oklch(0.25 0.027 167);
+  --primary: oklch(0.46 0.105 166);
+  --primary-foreground: oklch(0.985 0.008 110);
+  --secondary: oklch(0.93 0.035 153);
+  --secondary-foreground: oklch(0.31 0.06 166);
+  --muted: oklch(0.95 0.013 114);
+  --muted-foreground: oklch(0.51 0.025 163);
+  --accent: oklch(0.89 0.07 53);
+  --accent-foreground: oklch(0.35 0.055 43);
+  --destructive: oklch(0.61 0.18 28);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.623 0.214 259.815);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.235 0.015 65);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.623 0.214 259.815);
+  --border: oklch(0.89 0.025 139);
+  --input: oklch(0.89 0.025 139);
+  --ring: oklch(0.57 0.11 166);
+  --chart-1: oklch(0.57 0.11 166);
+  --chart-2: oklch(0.72 0.11 63);
+  --chart-3: oklch(0.69 0.11 203);
+  --chart-4: oklch(0.61 0.14 31);
+  --chart-5: oklch(0.48 0.08 255);
+  --sidebar: oklch(0.245 0.047 168);
+  --sidebar-foreground: oklch(0.94 0.018 132);
+  --sidebar-primary: oklch(0.77 0.105 157);
+  --sidebar-primary-foreground: oklch(0.22 0.043 168);
+  --sidebar-accent: oklch(0.32 0.052 168);
+  --sidebar-accent-foreground: oklch(0.97 0.012 130);
+  --sidebar-border: oklch(0.39 0.048 168);
+  --sidebar-ring: oklch(0.77 0.105 157);
+  --shadow-soft: 0 1px 2px oklch(0.21 0.035 167 / 0.04), 0 12px 34px oklch(0.21 0.035 167 / 0.07);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 .dark {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-500);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.85 0.005 65);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.85 0.005 65);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.85 0.005 65);
-  --secondary: oklch(0.24 0.006 286.033);
-  --secondary-foreground: oklch(0.7 0.005 65);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground:  oklch(0.92 0.005 65);
-  --destructive: oklch(0.704 0.191 22.216);
+  --background: oklch(0.19 0.027 168);
+  --foreground: oklch(0.93 0.015 131);
+  --card: oklch(0.235 0.032 168);
+  --card-foreground: oklch(0.93 0.015 131);
+  --popover: oklch(0.235 0.032 168);
+  --popover-foreground: oklch(0.93 0.015 131);
+  --primary: oklch(0.72 0.105 159);
+  --primary-foreground: oklch(0.19 0.027 168);
+  --secondary: oklch(0.29 0.04 168);
+  --secondary-foreground: oklch(0.91 0.02 137);
+  --muted: oklch(0.27 0.029 168);
+  --muted-foreground: oklch(0.7 0.025 148);
+  --accent: oklch(0.67 0.115 55);
+  --accent-foreground: oklch(0.2 0.025 45);
+  --destructive: oklch(0.68 0.17 27);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.488 0.243 264.376);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.85 0.005 65);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground:  oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.488 0.243 264.376);
+  --border: oklch(0.34 0.035 168);
+  --input: oklch(0.34 0.035 168);
+  --ring: oklch(0.72 0.105 159);
+  --sidebar: oklch(0.15 0.026 168);
+  --sidebar-foreground: oklch(0.92 0.018 132);
+  --sidebar-primary: oklch(0.72 0.105 159);
+  --sidebar-primary-foreground: oklch(0.16 0.026 168);
+  --sidebar-accent: oklch(0.24 0.035 168);
+  --sidebar-accent-foreground: oklch(0.94 0.016 132);
+  --sidebar-border: oklch(0.29 0.035 168);
+  --sidebar-ring: oklch(0.72 0.105 159);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
+
+  html {
+    min-width: 320px;
+    text-rendering: optimizeLegibility;
   }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    background-image:
+      radial-gradient(circle at 7% 3%, oklch(0.9 0.06 154 / 0.32), transparent 28rem),
+      radial-gradient(circle at 93% 97%, oklch(0.91 0.06 58 / 0.22), transparent 30rem);
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+  }
+
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [type="button"]:not(:disabled),
@@ -131,27 +150,24 @@
   input[type="radio"]:not(:disabled) {
     @apply cursor-pointer;
   }
+
+  button,
+  [role="button"] {
+    transition: transform 160ms var(--ease-out), box-shadow 180ms var(--ease-out), background-color 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out);
+  }
+
+  button:not(:disabled):active,
+  [role="button"]:not([aria-disabled="true"]):active {
+    transform: scale(0.97);
+  }
 }
 
 @layer components {
-  /**
-   * Custom container utility that centers content and adds responsive padding.
-   *
-   * This overrides Tailwind's default container behavior to:
-   * - Auto-center content (mx-auto)
-   * - Add responsive horizontal padding
-   * - Set max-width for large screens
-   *
-   * Usage: <div className="container">...</div>
-   *
-   * For custom widths, use max-w-* utilities directly:
-   * <div className="max-w-6xl mx-auto px-4">...</div>
-   */
   .container {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1rem; /* 16px - mobile padding */
+    padding-left: 1rem;
     padding-right: 1rem;
   }
 
@@ -160,18 +176,60 @@
     min-width: 0;
   }
 
+  .surface-card {
+    @apply bg-card text-card-foreground rounded-2xl border border-border/70;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .page-enter {
+    animation: page-enter 260ms var(--ease-out) both;
+  }
+
+  .eyebrow {
+    @apply text-[0.7rem] font-bold uppercase tracking-[0.18em] text-primary;
+  }
+
+  .hairline-grid {
+    background-image:
+      linear-gradient(to right, oklch(0.42 0.03 165 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.42 0.03 165 / 0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
   @media (min-width: 640px) {
     .container {
-      padding-left: 1.5rem; /* 24px - tablet padding */
+      padding-left: 1.5rem;
       padding-right: 1.5rem;
     }
   }
 
   @media (min-width: 1024px) {
     .container {
-      padding-left: 2rem; /* 32px - desktop padding */
+      max-width: 1440px;
+      padding-left: 2rem;
       padding-right: 2rem;
-      max-width: 1280px; /* Standard content width */
     }
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
